@@ -6,7 +6,8 @@ const app = express();
 const router = express.Router();
 
 router.use((req, res, next) => {
-    console.log('Router middleware ', Date.now(), '"');
+    // log the URL and date to help me follow what's going on as it gets more complex
+    console.log('Router middleware ', req.url, Date.now(), '"');
   next();
 });
 
@@ -16,7 +17,8 @@ router.get("/home", (req, res) => {
 
 // add middleware before routes
 app.use((req, res, next) => {
-    console.log('App middleware says, "stop, hammertime:', Date.now(), '"');
+    // log the URL and date to help me follow what's going on as it gets more complex
+    console.log('App middleware says, "stop, hammertime:', req.url, Date.now(), '"');
   next();
 });
 
