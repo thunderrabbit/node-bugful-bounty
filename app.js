@@ -15,6 +15,10 @@ router.get("/home", (req, res) => {
     res.send("Hello from " + req.url.replace(/^\//, ''));  // drop leading slash from URL
 });
 
+router.get("*", (req, res) => {
+    res.send("Hello, " + req.url.replace(/^\//, ''));  // drop leading slash from URL
+});
+
 // add middleware before routes
 app.use((req, res, next) => {
     // log the URL and date to help me follow what's going on as it gets more complex
