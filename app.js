@@ -1,25 +1,33 @@
-const http = require('express');
-
 const hostname = '0.0.0.0';
 const port = 4000;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/html');
-    switch(req.url) {
-    case "/home":
-	res.end('<h1>Hello Home</h1>');
-	break;
-    case "/about":
-	res.end('<h1>About last night</h1>');
-	break;
-    default:
-	res.end('<h1>Hello ' + req.url.replace(/^\//, '') + '</h1>');  // drop forward slash from URL
-	break;
-    }	
-    console.log("Serving " + req.url);
+const express = require('express');
+const app = express();
+const router = express.Router();
+
+router.use((req, res, next) => {
+    // log the URL and date to help me follow what's going on as it gets more complex
+    console.log('Router middleware ', req.url, Date.now(), '"');
+  next();
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+router.get("/home", (req, res) => {
+    res.send("Hello from " + req.url.replace(/^\//, ''));  // drop leading slash from URL
+});
+
+router.get("*", (req, res) => {
+    res.send("Hello, " + req.url.replace(/^\//, ''));  // drop leading slash from URL
+});
+
+// add middleware before routes
+app.use((req, res, next) => {
+    // log the URL and date to help me follow what's going on as it gets more complex
+    console.log('App middleware says, "stop, hammertime:', req.url, Date.now(), '"');
+  next();
+});
+
+app.use('/', router);
+
+app.listen(process.env.port || `${port}`, hostname, () => {
+  console.log(`App running at http://${hostname}:${port}/`);
 });
